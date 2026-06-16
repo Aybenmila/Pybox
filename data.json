@@ -1,0 +1,59 @@
+{
+    "particles": {
+        "1": 
+        {
+            "name" : "electron",
+            "type" :"nuclear",
+            "temp" : "200",
+            "mass" : "0",
+            "sh" : "1",
+            "color" : [255, 255, 255]
+            
+
+        },
+        "2":
+        {
+            "name" : "proton",
+            "type" :"nuclear",
+            "temp" : "24",
+            "mass" : "0",
+            "sh" : "1",
+            "color" : [255, 0, 0]
+            
+
+        },
+        "3":
+        {
+            "name" : "neutron",
+            "type" :"nuclear",
+            "temp" : "24",
+            "mass" : "0",
+            "sh" : "1",
+            "color" : [20, 138, 255]
+            
+
+        },
+        "4":
+        {
+            "name" : "sand",
+            "type" :"powder",
+            "temp" : "24",
+            "mass" : "1",
+            "sh" : "1",
+            "color" : [220, 181, 132]
+            
+
+        },
+        "5":
+        {
+            "name" : "Iron",
+            "type" :"solid",
+            "temp" : "24",
+            "mass" : "0",
+            "sh" : "1",
+            "color" : [82, 89, 93]
+            
+
+        }
+    }
+}
