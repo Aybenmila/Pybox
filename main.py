@@ -57,10 +57,10 @@ while running:
         if event.type == pygame.KEYDOWN:
 
             if event.key == pygame.K_TAB:
-                selected += 1 
+                selected += 1
 
                 if selected > 6:
-                    selected = 1 
+                    selected = 1
 
     if pygame.mouse.get_pressed()[0]:
         x, y = pygame.mouse.get_pos()

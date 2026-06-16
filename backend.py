@@ -23,21 +23,20 @@ with open(resource_path("data.json"), "r", encoding="utf-8") as f:
 
 class Reactions():
     def __init__(self):
+        self.data = json.loads(gameData)
         self.rules = {
-            (1,2):["NEUTSPWN",3]
+            tuple(map(int, k.split(","))): v
+            for k, v in self.data["reactions"].items()
         }
 
-    def count(self,cell:list):
-        cell.sort()
-        sayac = dict(Counter(cell))
-        return sayac
-    
+    def count(self, cell:list):
+        return dict(Counter(cell))
+
     def react(self, cell):
         counts = self.count(cell)
         results = []
-
-        for (a, b), effect in self.rules.items():
-            if counts.get(a, 0) > 0 and counts.get(b, 0) > 0:
+        for rule, effect in self.rules.items():
+            if all(counts.get(x, 0) > 0 for x in rule):
                 results.append(effect)
 
         return results
