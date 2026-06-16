@@ -6,6 +6,8 @@ pygame.init()
 WIDTH = 800
 HEIGHT = 600
 
+GRIDWIDTH = 267 
+GRIDHEIGHT = 200
 
 
 #!ViewMode Ekle
@@ -23,14 +25,14 @@ font = pygame.font.SysFont("Arial", 24)
 
 #!Stres testi
 # for _ in range(4000):
-#     proton = backend.Nuclear("proton",2,pygame,200,150,24,1,(255, 0, 0))
-#     electron = backend.Nuclear("electron",1,pygame,200,450,24,1,(255, 255, 255))
+#     proton = backend.Nuclear("proton",2,pygame,GRIDHEIGHT,150,24,1,(255, 0, 0))
+#     electron = backend.Nuclear("electron",1,pygame,GRIDHEIGHT,450,24,1,(255, 255, 255))
 
 #     parts.append(proton)
 #     parts.append(electron)
 
 #* Tek particle testi
-# electron = backend.Nuclear(pygame,267,200,24,1,(255, 255, 255))
+# electron = backend.Nuclear(pygame,GRIDWIDTH,GRIDHEIGHT,24,1,(255, 255, 255))
 # parts.append(electron)
 
 
@@ -45,7 +47,7 @@ selected = 1
 
 
 while running:
-    grid = [[[] for _ in range(-5,267)] for _ in range(-5,200)]
+    grid = [[[] for _ in range(-5,GRIDWIDTH)] for _ in range(-5,GRIDHEIGHT)]
     saat = clock.tick(game.tick)
     DT = saat / 1000
     win.fill((0,0,0))
@@ -128,7 +130,7 @@ while running:
         #     print(part.y_velocity)
 
     if pygame.mouse.get_pressed()[2]:
-        delete.extend(grid[max(0, min(pygame.mouse.get_pos()[1]//3, 200))][max(0, min(pygame.mouse.get_pos()[0]//3, 267))])
+        delete.extend(grid[max(0, min(pygame.mouse.get_pos()[1]//3, GRIDWIDTH))][max(0, min(pygame.mouse.get_pos()[0]//3, GRIDHEIGHT))])
 
     for part in delete:
         try:parts.remove(part)
