@@ -1,12 +1,23 @@
 import random
 import math
-import time 
+import time
 from collections import Counter
 import json
+import os
+import sys
 
 #!Işık ekle
 
-gameData = open("data.json","r",encoding="utf-8").read()
+def resource_path(relative_path):
+    try:
+        base_path = sys._MEIPASS  # PyInstaller geçici klasörü
+    except AttributeError:
+        base_path = os.path.dirname(os.path.abspath(__file__))
+
+    return os.path.join(base_path, relative_path)
+
+with open(resource_path("data.json"), "r", encoding="utf-8") as f:
+    gameData = f.read()
 
 
 
