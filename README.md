@@ -18,8 +18,8 @@ A 2d physic based sandbox game made with python and pygame. Game provides variou
 #### DOWNLOADS
 
 
-[Windows](https://github.com/Aybenmila/Sandbox/releases/download/0.0.1/main.exe "Tooltip")
+[Windows](https://github.com/Aybenmila/Sandbox/releases/download/0.0.1/main.exe "Windows executable")
 
-[Mac](https://github.com/Aybenmila/Sandbox/releases/download/0.0.1/mac-app.zip "Tooltip")
+[Mac](https://github.com/Aybenmila/Sandbox/releases/download/0.0.1/mac-app.zip "Mac executable")
 
 Made By aybenmila
