@@ -10,13 +10,16 @@ A 2d physic based sandbox game made with python and pygame. Game provides variou
 * Will change and correct liquid physics
 * Will remove pass through bug
 
-
 ### ACTIVE REACTIONS
 
 1. Electron + Proton = Neutron
 
 
+#### DOWNLOADS
 
 
+[Windows](https://github.com/Aybenmila/Sandbox/releases/download/0.0.1/main.exe "Tooltip")
+
+[Mac](https://github.com/Aybenmila/Sandbox/releases/download/0.0.1/mac-app.zip "Tooltip")
 
 Made By aybenmila
