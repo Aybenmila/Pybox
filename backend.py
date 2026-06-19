@@ -238,7 +238,8 @@ class Powder(Particle):
 
 
             self.x += moveTo
-            cell = grid[min(int(self.y//3),GRIDWIDTH)][min(int(self.x+moveTo) //3, GRIDHEIGHT)]
+            gotoX , gotoY = self.y//3 , self.x + moveTo//3
+            cell = grid[min(int(gotoY),GRIDWIDTH)][min(int(gotoX), GRIDHEIGHT)]
             
             if self not in cell:
                 cell.append(self)
@@ -301,9 +302,10 @@ class Liquid(Particle):
 
             self.x += moveTo
             cell = grid[min(int(self.y//3),GRIDWIDTH)][min(int(self.x) //3, GRIDHEIGHT)]
-            if any(item.type == "powder" for item in cell):
+            if len(cell) >1:
+                print(any(item.type == "powder" for item in cell))
                 self.y -= 50
-                cell = grid[min(int(self.y//3)-3,GRIDWIDTH)][min(int(self.x) //3, GRIDHEIGHT)]
+                cell = grid[min(int(self.y//3),GRIDWIDTH)][min(int(self.x) //3, GRIDHEIGHT)]
                 
             if self not in cell:
                 cell.append(self)

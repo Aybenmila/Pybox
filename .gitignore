@@ -1,3 +1,4 @@
 dist/
 .github/
 .gitignore
+__pycache__/
