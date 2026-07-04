@@ -35,7 +35,17 @@ font = pygame.font.SysFont("Arial", 24)
 # electron = backend.Nuclear(pygame,GRIDWIDTH,GRIDHEIGHT,24,1,(255, 255, 255))
 # parts.append(electron)
 
+for i in range(300,500):
+    iron = backend.Solid("iron",5,pygame,i,300,24,1,(255,32,13))
+    parts.append(iron)
 
+for i in range(250,300):
+    iron = backend.Solid("iron",5,pygame,300,i,24,1,(255,32,13))
+    parts.append(iron)
+
+for i in range(250,300):
+    iron = backend.Solid("iron",5,pygame,500,i,24,1,(255,32,13))
+    parts.append(iron)
 
 clock = pygame.time.Clock()
 game = backend.Game(9.98,60)

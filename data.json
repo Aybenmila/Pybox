@@ -46,7 +46,7 @@
         },
         "5":
         {
-            "name" : "Iron",
+            "name" : "iron",
             "type" :"solid",
             "temp" : "24",
             "mass" : "1",
@@ -56,7 +56,7 @@
 
         },
         "6":{
-            "name" : "Water",
+            "name" : "water",
             "type" :"liquid",
             "temp" : "24",
             "mass" : "1",
