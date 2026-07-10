@@ -9,7 +9,6 @@ async def mainGame():
 
 
     #!ViewMode Ekle
-    #!Gaz ve Light Ekle ekle
     #!Sıcaklık ve ısı sistemini kur
 
 
@@ -35,13 +34,20 @@ async def mainGame():
 
     async def mouseDelete():
         x, y = pygame.mouse.get_pos()
-        x,y = x - cursorWidth//2 , y - cursorHeight //2
-        for i in range(0,cursorHeight+1):
-            newY = y+i
-            for j in range(0,cursorWidth+1):
-                newX = x+j
 
-                delete.extend(grid[max(0, min(int(newY//3),GRIDHEIGHT ))][max(0, min(int(newX//3), GRIDWIDTH))])
+        x -= cursorWidth // 2
+        y -= cursorHeight // 2
+
+        start_x = max(0, x // 3)
+        end_x = min(GRIDWIDTH, (x + cursorWidth) // 3)
+
+        start_y = max(0, y // 3)
+        end_y = min(GRIDHEIGHT, (y + cursorHeight) // 3)
+
+        for gy in range(start_y, end_y + 1):
+            row = grid[gy]
+            for gx in range(start_x, end_x + 1):
+                delete.extend(row[gx])
 
 
 
@@ -64,7 +70,8 @@ async def mainGame():
     pygame.display.set_caption("Pybox")
     pygame.mouse.set_visible(False)
 
-    stopped = False
+    drawGrids = False
+    stopped = True
     running = True
     parts = []
     font = pygame.font.SysFont("Arial", 24)
@@ -72,7 +79,7 @@ async def mainGame():
 
 
     clock = pygame.time.Clock()
-    game = backend.Game(9.98,60)
+    game = backend.Game(9.98,60,1.185)
     delete = []
     selected = 1
 
@@ -86,9 +93,9 @@ async def mainGame():
     #     parts.append(proton)
     #     parts.append(electron)
 
-    # # * Tek particle testi
-    # electron = backend.Nuclear("electron",1,pygame,300,450,24,1,(255, 255, 255))
-    # parts.append(electron)
+    # * Tek particle testi
+    electron = backend.Nuclear("electron",1,pygame,300,450,24,1,(255, 255, 255))
+    parts.append(electron)
 
     # # * Tabak
     # for i in range(300,500):
@@ -126,7 +133,7 @@ async def mainGame():
                 if event.key == pygame.K_TAB:
                     selected += 1
 
-                    if selected > 6:
+                    if selected > 7:
                         selected = 1
 
                 if event.key == pygame.K_LSHIFT:
@@ -136,25 +143,23 @@ async def mainGame():
                 if event.key == pygame.K_SPACE:
                     stopped = not stopped
 
+                if event.key == pygame.K_r:
+                    grid = [[[] for _ in range(-5,GRIDWIDTH)] for _ in range(-5,GRIDHEIGHT)]
+                    parts.clear()
+                    delete.clear()
+
+                if event.key == pygame.K_g:
+                    drawGrids = not drawGrids
+
 
             if cursorHeight > 216 or cursorWidth > 216:
                 cursorHeight , cursorWidth = 3,3
 
-
-
-                
-
-            
-        
-        
-        
-        
-        
         for part in parts:
             part.draw(win,grid)
             if not stopped:
                 if part.type != "solid":
-                    part.gravity(win,game.gravity,DT,grid)
+                    part.gravity(win,game.gravity,DT,grid,game)
                     part.move(win,DT,grid)
 
                     if 0 > part.x or part.x >800:
@@ -162,7 +167,7 @@ async def mainGame():
                             parts.remove(part)
                         except:pass
 
-                    if 0 > part.y or part.y >596:
+                    if 0 > part.y or part.y >599:
                         try:
                             parts.remove(part)
                         except:pass
@@ -215,6 +220,14 @@ async def mainGame():
 
         # pygame.draw.rect(win,(111, 112, 106),( cursorHeight,cursorWidth))
 
+        if drawGrids:
+            for i in range(0,800,3):
+                pygame.draw.line(win,(255,0,0),(i,0),(i,HEIGHT))
+            for i in range(0,HEIGHT,3):
+                pygame.draw.line(win,(255,0,0),(0,i),(WIDTH,i))
+                
+
+
         cursor = pygame.Surface((cursorWidth,cursorHeight))
         cursor.set_alpha(64)
         cursor.fill((255,255,255))
@@ -224,6 +237,8 @@ async def mainGame():
         win.blit(font.render(f"selected particle:{game.elementData(selected)["name"]}",True,(255,255,255)),(0,20))
         
         pygame.display.flip()
+
+        
 
         await asyncio.sleep(0)
 

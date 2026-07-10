@@ -69,7 +69,7 @@ class Particle:
         if self not in theGrid:
             theGrid.append(self)
     
-    def gravity(self,win,gravity,dt,grid):
+    def gravity(self,win,gravity,dt,grid,theGame):
         downCell = grid[min(int(self.y//3)+1,GRIDHEIGHT)][min((int(self.x) //3), GRIDWIDTH)]
         if downCell and any(item.type in ("solid", "powder") or item.type == self.type for item in downCell):
             self.y_velocity = 0
@@ -124,7 +124,7 @@ class Nuclear(Particle):
         super().__init__(name,particleId,pygame,x,y,temp,mass,color,x_velocity,y_velocity,lifeTime=self.lifeTime)
 
 
-    def gravity(self,win,gravity,dt,grid):pass
+    def gravity(self,win,gravity,dt,grid,theGame):pass
 
     def move(self,win,dt,grid):
         if 0 < self.x < 800 and 0 < self.y < 600:
@@ -140,10 +140,11 @@ class Nuclear(Particle):
 
 
 class Game():
-    def __init__(self,gravity,tick):
+    def __init__(self,gravity,tick,airDens):
         self.gravity = gravity
         self.tick = tick
         self.veri = json.loads(gameData)
+        self.airDensity = airDens
     
     def reaction(self,cell):
         particles = [int(particle.id) for particle in cell]
@@ -173,6 +174,10 @@ class Game():
 
             case "liquid":
                 part = Liquid(particle["name"],id,pygame,x,y,int(particle["temp"]),int(particle["mass"]),tuple(particle["color"]))
+                return part
+
+            case "gas":
+                part = Gas(particle["name"],id,pygame,x,y,int(particle["temp"]),int(particle["mass"]),tuple(particle["color"]))
                 return part
 
 
@@ -264,7 +269,7 @@ class Solid(Particle):
         super().__init__(name,particleId,pygame,x,y,temp,mass,color)
 
 
-    def gravity(self,win,gravity,dt,grid):pass
+    def gravity(self,win,gravity,dt,grid,theGame):pass
 
     def move(self,win,dt,grid):pass
 
@@ -307,16 +312,49 @@ class Liquid(Particle):
         self.x += moveTo
         cell = grid[min(int(self.y//3),GRIDHEIGHT)][min((int(self.x) //3) , GRIDWIDTH)]
         if len(cell) >1:
-            if any(item.type == "solid" or item.type == "powder" for item in cell):
-                self.y -= 1
+            if any(item.type == "powder" for item in cell):
+                ...
             cell = grid[min(int(self.y//3),GRIDHEIGHT)][min((int(self.x) //3), GRIDWIDTH)]
             
         if self not in cell:
             cell.append(self)
             return cell
 
+class Gas(Particle):
+    def __init__(self,name:str,particleId:int,pygame,x,y,temp,mass,color,density=1):
+        self.name = name
+        self.particleID = particleId
+        self.pygame = pygame
+        self.x = x 
+        self.y = y
+        self.temp = temp
+        self.mass = mass
+        self.color = color
+        self.type = "gas"
+        self.density = density
 
 
+        super().__init__(name,particleId,pygame,x,y,temp,mass,color)
+
+    def gravity(self,win,gravity,dt,grid,theGame):
+        direction  = -1*((self.y_velocity > 0) - (self.y_velocity < 0))
+        value = -(theGame.airDensity - self.density * dt)
+        self.y_velocity =  value
+        if len(grid[min(int(self.y//3)+direction,GRIDHEIGHT)][min((int(self.x) //3), GRIDWIDTH)]) > 1:
+            self.y_velocity = 0
+            self.y += direction * 3
+            return
+
+        self.y += self.y_velocity
+
+    def move(self,win,dt,grid):
+        moveTo = random.randint(0,1) * 2 - 1
+        gotoCell = grid[min(int(self.y//3),GRIDHEIGHT)][min((int(self.x) //3)+moveTo, GRIDWIDTH)]
+        if len(gotoCell) > 0:
+            moveTo *= -1
+        gotoCell = grid[min(int(self.y//3),GRIDHEIGHT)][min((int(self.x) //3)+moveTo, GRIDWIDTH)]
+        if len(gotoCell) > 0:
+            moveTo *= 0
 
 
-#! Işık ekle
+        self.x += moveTo

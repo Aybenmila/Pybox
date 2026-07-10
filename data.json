@@ -64,6 +64,16 @@
             "color" : [17, 98, 162]
             
 
+        },
+        "7":{
+            "name" : "oxygen",
+            "type" :"gas",
+            "temp" : "24",
+            "mass" : "1",
+            "sh" : "1",
+            "color" : [148, 199, 247]
+            
+
         }
     },
     "reactions":
