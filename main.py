@@ -8,8 +8,7 @@ import asyncio
 async def mainGame():
 
 
-    #!ViewMode Ekle
-    #!Sıcaklık ve ısı sistemini kur
+
 
 
             

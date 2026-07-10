@@ -4,8 +4,6 @@ A 2d physic based sandbox backbone made with python and pygame.
 
 ## TO-DO
 
-* Will add gas and light element classes
-* Will add heat simulation
 * Will change and correct liquid physics
 * Will remove pass through bug
 

@@ -184,28 +184,7 @@ class Game():
             case _:
                 pass
 
-    # def heat(self, cell) -> None:
-    #     ust = 0
-    #     alt = 0
 
-    #     for part in cell:
-    #         ust += part.temp * part.sh * part.mass
-    #         alt += part.mass * part.sh
-
-    #     result = ust / alt if alt > 0 else -274
-
-    #     if 9500 >  result > -274 :
-    #         for part in cell:
-    #             heat_capacity = part.mass * part.sh
-
-    #             # İletkenlik/hız katsayısı
-    #             transfer_rate = 0.1
-
-    #             # Denge sıcaklığına doğru yaklaş
-    #             delta = (result - part.temp) * transfer_rate
-
-    #             # Öz ısısı ve kütlesi büyük olanlar daha yavaş değişsin
-    #             part.temp += delta / max(heat_capacity, 1e-6)
 
 
 
