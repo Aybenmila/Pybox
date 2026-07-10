@@ -63,7 +63,7 @@ class Particle:
         self.y_velocity = y_velocity
         self.id = particleId
         self.lifeTime = lifeTime 
-    def draw(self,win):self.pygame.draw.rect(win, self.color, (self.x, self.y, 3, 3))
+    def draw(self,win,grid):self.pygame.draw.rect(win, self.color, (self.x, self.y, 3, 3))
     
     def gravity(self,win,gravity,dt,grid):
         downCell = grid[min(int(self.y//3)+1,GRIDHEIGHT)][min((int(self.x) //3), GRIDWIDTH)]
@@ -263,8 +263,10 @@ class Solid(Particle):
 
     def gravity(self,win,gravity,dt,grid):pass
 
-    def move(self,win,dt,grid):
-        grid[min(int(self.y//3),GRIDHEIGHT)][min((int(self.x) //3), GRIDWIDTH)].append(self)
+    def move(self,win,dt,grid):pass
+
+    def draw(self,win,grid):
+        self.pygame.draw.rect(win, self.color, (self.x, self.y, 3, 3));grid[min(int(self.y//3),GRIDHEIGHT)][min((int(self.x) //3), GRIDWIDTH)].append(self)
 
 
 

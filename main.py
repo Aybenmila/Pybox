@@ -12,44 +12,7 @@ async def mainGame():
     #!Gaz ve Light Ekle ekle
     #!Sıcaklık ve ısı sistemini kur
 
-    def manageParts(part):
-            part.gravity(win,game.gravity,DT,grid)
-            part.move(win,DT,grid)
 
-            if 0 > part.x or part.x >800:
-                try:
-                    delete.append(part)
-                except:pass
-
-            if 0 > part.y or part.y >600:
-                try:
-                    delete.append(part)
-                except:pass
-        
-
-            if part.checkLifeTime():
-                delete.append(part)
-
-
-            result = part.checkCollision(grid)
-            if result[0]:
-                synthesis = []
-                data = game.reaction(result[2])
-                # heat = game.heat(result[2])
-                match data[0][0][0]:
-                    case "NEUTSPWN":
-                        part = game.spawner(data[0][0][1],result[1][0],result[1][1],pygame)
-                        parts.append(part)
-                        synthesis.append(part)
-                        delete = [x for x in data[1] if x not in synthesis]
-
-
-
-
-
-
-                    case "0":pass
-                    case _:pass
             
 
     async def mouseCreate():
@@ -148,8 +111,8 @@ async def mainGame():
 
 
     while running:
-        saat = clock.tick(game.tick)
         grid = [[[] for _ in range(-5,GRIDWIDTH)] for _ in range(-5,GRIDHEIGHT)]
+        saat = clock.tick(game.tick)
         DT = saat / 1000
         win.fill((0,0,0))
 
@@ -187,8 +150,45 @@ async def mainGame():
         
         
         for part in parts:
-            part.draw(win)
-            manageParts(part)
+            part.draw(win,grid)
+            if part.type != "solid":
+                part.gravity(win,game.gravity,DT,grid)
+                part.move(win,DT,grid)
+
+                if 0 > part.x or part.x >800:
+                    try:
+                        delete.append(part)
+                    except:pass
+
+                if 0 > part.y or part.y >600:
+                    try:
+                        delete.append(part)
+                    except:pass
+            
+
+                if part.checkLifeTime():
+                    delete.append(part)
+
+
+                result = part.checkCollision(grid)
+                if result[0]:
+                    synthesis = []
+                    data = game.reaction(result[2])
+                    # heat = game.heat(result[2])
+                    match data[0][0][0]:
+                        case "NEUTSPWN":
+                            part = game.spawner(data[0][0][1],result[1][0],result[1][1],pygame)
+                            parts.append(part)
+                            synthesis.append(part)
+                            delete = [x for x in data[1] if x not in synthesis]
+
+
+
+
+
+
+                        case "0":pass
+                        case _:pass
             
 
                     
