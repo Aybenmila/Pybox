@@ -77,20 +77,20 @@ async def mainGame():
     selected = 1
 
 
-    #! Testler
-    #* Stres testi
+    # #! Testler
+    # # * Stres testi
     # for _ in range(4000):
-    #     proton = backend.Nuclear("proton",2,pygame,GRIDHEIGHT,150,24,1,(255, 0, 0))
-    #     electron = backend.Nuclear("electron",1,pygame,GRIDHEIGHT,450,24,1,(255, 255, 255))
+    #     proton = backend.Nuclear("proton",2,pygame,300,150,21,1,(255, 0, 0))
+    #     electron = backend.Nuclear("electron",1,pygame,300,450,24,1,(255, 255, 255))
 
     #     parts.append(proton)
     #     parts.append(electron)
 
-    #* Tek particle testi
-    # electron = backend.Nuclear(pygame,GRIDWIDTH,GRIDHEIGHT,24,1,(255, 255, 255))
+    # # * Tek particle testi
+    # electron = backend.Nuclear("electron",1,pygame,300,450,24,1,(255, 255, 255))
     # parts.append(electron)
 
-    #* Tabak
+    # # * Tabak
     # for i in range(300,500):
     #     iron = backend.Solid("iron",5,pygame,i,300,24,1,(255,32,13))
     #     parts.append(iron)
@@ -104,7 +104,7 @@ async def mainGame():
     #     parts.append(iron)
 
 
-    #* Blok
+    # # * Blok
     # for i in range(300,304):
     #     for j in range(250,300):
     #         iron = backend.Solid("iron",5,pygame,j,i,24,1,(255,32,13))
@@ -159,12 +159,12 @@ async def mainGame():
 
                     if 0 > part.x or part.x >800:
                         try:
-                            delete.append(part)
+                            parts.remove(part)
                         except:pass
 
-                    if 0 > part.y or part.y >600:
+                    if 0 > part.y or part.y >596:
                         try:
-                            delete.append(part)
+                            parts.remove(part)
                         except:pass
                 
 

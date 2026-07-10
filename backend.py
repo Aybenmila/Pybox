@@ -74,7 +74,6 @@ class Particle:
         if downCell and any(item.type in ("solid", "powder") or item.type == self.type for item in downCell):
             self.y_velocity = 0
             return
-        downPart = [item.type for item in downCell]
         self.y_velocity += gravity * dt * 15
         if self.y_velocity >= 3:
             self.y_velocity = 3
@@ -293,29 +292,28 @@ class Liquid(Particle):
     def move(self,win,dt,grid):
         downCell = []
         moveTo = random.randint(0,1) * 2 - 1
-        if 0 < self.x < 800 and 0 < self.y < 600:
-            upCell = grid[min(int(self.y//3)-1,GRIDHEIGHT)][min((int(self.x) //3), GRIDWIDTH)]
-            downCell = grid[min(int(self.y//3)+1,GRIDHEIGHT)][min((int(self.x) //3), GRIDWIDTH)]
-            if not len(upCell) > 0 and len(downCell) > 0:
+        upCell = grid[min(int(self.y//3)-1,GRIDHEIGHT)][min((int(self.x) //3), GRIDWIDTH)]
+        downCell = grid[min(int(self.y//3)+1,GRIDHEIGHT)][min((int(self.x) //3), GRIDWIDTH)]
+        if not len(upCell) > 0 and len(downCell) > 0:
 
-                gotoCell = grid[min(int(self.y//3),GRIDHEIGHT)][min((int(self.x) //3)+moveTo, GRIDWIDTH)]
-                if len(gotoCell) > 0:
-                    moveTo *= -1
-                gotoCell = grid[min(int(self.y//3),GRIDHEIGHT)][min((int(self.x) //3)+moveTo, GRIDWIDTH)]
-                if len(gotoCell) > 0:
-                    moveTo *= 0
+            gotoCell = grid[min(int(self.y//3),GRIDHEIGHT)][min((int(self.x) //3)+moveTo, GRIDWIDTH)]
+            if len(gotoCell) > 0:
+                moveTo *= -1
+            gotoCell = grid[min(int(self.y//3),GRIDHEIGHT)][min((int(self.x) //3)+moveTo, GRIDWIDTH)]
+            if len(gotoCell) > 0:
+                moveTo *= 0
 
 
-            self.x += moveTo
-            cell = grid[min(int(self.y//3),GRIDHEIGHT)][min((int(self.x) //3) , GRIDWIDTH)]
-            if len(cell) >1:
-                if any(item.type == "solid" or item.type == "powder" for item in cell):
-                    self.y -= 1
-                cell = grid[min(int(self.y//3),GRIDHEIGHT)][min((int(self.x) //3), GRIDWIDTH)]
-                
-            if self not in cell:
-                cell.append(self)
-                return cell
+        self.x += moveTo
+        cell = grid[min(int(self.y//3),GRIDHEIGHT)][min((int(self.x) //3) , GRIDWIDTH)]
+        if len(cell) >1:
+            if any(item.type == "solid" or item.type == "powder" for item in cell):
+                self.y -= 1
+            cell = grid[min(int(self.y//3),GRIDHEIGHT)][min((int(self.x) //3), GRIDWIDTH)]
+            
+        if self not in cell:
+            cell.append(self)
+            return cell
 
 
 
