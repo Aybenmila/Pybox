@@ -64,6 +64,7 @@ async def mainGame():
     pygame.display.set_caption("Sandbox")
     # pygame.mouse.set_visible(False)
 
+    stopped = False
     running = True
     parts = []
     font = pygame.font.SysFont("Arial", 24)
@@ -135,6 +136,10 @@ async def mainGame():
                 if event.key == pygame.K_LSHIFT:
                     cursorHeight = int(cursorHeight *1.5)
                     cursorWidth = int(cursorWidth *1.5)
+                
+                if event.key == pygame.K_SPACE:
+                    stopped = not stopped
+
 
             if cursorHeight > 216 or cursorWidth > 216:
                 cursorHeight , cursorWidth = 3,3
@@ -151,44 +156,45 @@ async def mainGame():
         
         for part in parts:
             part.draw(win,grid)
-            if part.type != "solid":
-                part.gravity(win,game.gravity,DT,grid)
-                part.move(win,DT,grid)
+            if not stopped:
+                if part.type != "solid":
+                    part.gravity(win,game.gravity,DT,grid)
+                    part.move(win,DT,grid)
 
-                if 0 > part.x or part.x >800:
-                    try:
+                    if 0 > part.x or part.x >800:
+                        try:
+                            delete.append(part)
+                        except:pass
+
+                    if 0 > part.y or part.y >600:
+                        try:
+                            delete.append(part)
+                        except:pass
+                
+
+                    if part.checkLifeTime():
                         delete.append(part)
-                    except:pass
-
-                if 0 > part.y or part.y >600:
-                    try:
-                        delete.append(part)
-                    except:pass
-            
-
-                if part.checkLifeTime():
-                    delete.append(part)
 
 
-                result = part.checkCollision(grid)
-                if result[0]:
-                    synthesis = []
-                    data = game.reaction(result[2])
-                    # heat = game.heat(result[2])
-                    match data[0][0][0]:
-                        case "NEUTSPWN":
-                            part = game.spawner(data[0][0][1],result[1][0],result[1][1],pygame)
-                            parts.append(part)
-                            synthesis.append(part)
-                            delete = [x for x in data[1] if x not in synthesis]
+                    result = part.checkCollision(grid)
+                    if result[0]:
+                        synthesis = []
+                        data = game.reaction(result[2])
+                        # heat = game.heat(result[2])
+                        match data[0][0][0]:
+                            case "NEUTSPWN":
+                                part = game.spawner(data[0][0][1],result[1][0],result[1][1],pygame)
+                                parts.append(part)
+                                synthesis.append(part)
+                                delete = [x for x in data[1] if x not in synthesis]
 
 
 
 
 
 
-                        case "0":pass
-                        case _:pass
+                            case "0":pass
+                            case _:pass
             
 
                     
