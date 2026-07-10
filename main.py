@@ -7,12 +7,6 @@ import asyncio
 
 async def mainGame():
 
-
-
-
-
-            
-
     async def mouseCreate():
         x, y = pygame.mouse.get_pos()
         x,y = x - cursorWidth//2 , y - cursorHeight //2
@@ -70,7 +64,7 @@ async def mainGame():
     pygame.mouse.set_visible(False)
 
     drawGrids = False
-    stopped = True
+    stopped = False
     running = True
     parts = []
     font = pygame.font.SysFont("Arial", 24)
@@ -93,8 +87,8 @@ async def mainGame():
     #     parts.append(electron)
 
     # * Tek particle testi
-    electron = backend.Nuclear("electron",1,pygame,300,450,24,1,(255, 255, 255))
-    parts.append(electron)
+    # electron = backend.Nuclear("electron",1,pygame,300,450,24,1,(255, 255, 255))
+    # parts.append(electron)
 
     # # * Tabak
     # for i in range(300,500):

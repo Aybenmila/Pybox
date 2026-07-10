@@ -321,7 +321,7 @@ class Gas(Particle):
         self.y_velocity =  value
         if len(grid[min(int(self.y//3)+direction,GRIDHEIGHT)][min((int(self.x) //3), GRIDWIDTH)]) > 1:
             self.y_velocity = 0
-            self.y += direction * 3
+            self.y += direction * 5
             return
 
         self.y += self.y_velocity
