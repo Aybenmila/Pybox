@@ -61,8 +61,8 @@ async def mainGame():
 
 
     win = pygame.display.set_mode((WIDTH, HEIGHT))
-    pygame.display.set_caption("Sandbox")
-    # pygame.mouse.set_visible(False)
+    pygame.display.set_caption("Pybox")
+    pygame.mouse.set_visible(False)
 
     stopped = False
     running = True
@@ -116,10 +116,6 @@ async def mainGame():
         saat = clock.tick(game.tick)
         DT = saat / 1000
         win.fill((0,0,0))
-
-        pygame.draw.rect(win,(111, 112, 106),(pygame.mouse.get_pos()[0]-cursorWidth//2,pygame.mouse.get_pos()[1]-cursorHeight//2, cursorHeight,cursorWidth))
-
-
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -217,10 +213,16 @@ async def mainGame():
 
 
 
+        # pygame.draw.rect(win,(111, 112, 106),( cursorHeight,cursorWidth))
 
+        cursor = pygame.Surface((cursorWidth,cursorHeight))
+        cursor.set_alpha(64)
+        cursor.fill((255,255,255))
+        win.blit(cursor,(pygame.mouse.get_pos()[0]-cursorWidth//2,pygame.mouse.get_pos()[1]-cursorHeight//2,))
         
         win.blit(font.render(f"Particle:{len(parts)} , FPS : {int(clock.get_fps())}", True, (255, 255, 255)), (0, 0))
         win.blit(font.render(f"selected particle:{game.elementData(selected)["name"]}",True,(255,255,255)),(0,20))
+        
         pygame.display.flip()
 
         await asyncio.sleep(0)
