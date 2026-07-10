@@ -1,0 +1,39 @@
+name: Build Mac App
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  workflow_dispatch: # Bu satır çok önemli! Sayfaya manuel "Çalıştır" butonu ekler.
+
+permissions:
+  contents: write
+
+jobs:
+  build-mac:
+    runs-on: macos-14 # En kararlı ARM64 (M serisi) Mac sunucusunu doğrudan seçtik
+    steps:
+      - name: Kodu Cek
+        uses: actions/checkout@v4
+
+      - name: Python Kur
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Gerekli Kutuphaneleri Yukle
+        run: |
+          python -m pip install --upgrade pip
+          pip install pygame --pre
+          pip install pyinstaller
+
+      - name: Paketle
+        run: |
+          pyinstaller --onefile --windowed --add-data "data.json:." main.py
+          
+      - name: Ciktiyi Kaydet
+        uses: actions/upload-artifact@v4
+        with:
+          name: mac-app
+          path: dist/
