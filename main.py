@@ -136,7 +136,7 @@ async def mainGame():
                     if selected > 7:
                         selected = 1
 
-                if event.key == pygame.K_LSHIFT:
+                if event.key == pygame.K_LSHIFT or pygame.K_RSHIFT:
                     cursorHeight = int(cursorHeight *1.5)
                     cursorWidth = int(cursorWidth *1.5)
                 
