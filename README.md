@@ -1,11 +1,14 @@
 # PYBOX
 
-A 2d physic based sandbox backbone made with python and pygame.
+A 2d physic based sandbox backbone made with python and pygame. 
 
-## TO-DO
+This backbone provides 5 different particle types so far:
 
-* Will change and correct liquid physics
-* Will remove pass through bug
+* Nuclear
+* Powder
+* Solid
+* Water
+* Gas
 
 ### TEST REACTIONS
 
