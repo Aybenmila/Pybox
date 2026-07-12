@@ -1,20 +1,23 @@
 # PYBOX
 
-A 2d physic based sandbox backbone made with python and pygame.
+A 2d physic based sandbox backbone made with python and pygame. This game provides 5 particle classes so far those are
 
-## TO-DO
+* Nuclear
+* Powder
+* Solid
+* Liquid
+* Gas
 
-* Will change and correct liquid physics
-* Will remove pass through bug
 
-### TEST REACTIONS
+
+Currently there is 1 reaction. But you can add more if you want to with the collision and spawn system. This is my first ever game so expect bugs and other thing. I tried my best to debug.
+
+:)
+
+### TEST REACTION
 
 1. Electron + Proton = Neutron
 
-#### DOWNLOADS
 
-[Windows](https://github.com/Aybenmila/Sandbox/releases/download/0.0.1/main.exe "Windows executable")
-
-[Mac](https://github.com/Aybenmila/Sandbox/releases/download/0.0.1/mac-app.zip "Mac executable")
 
 Made By aybenmila

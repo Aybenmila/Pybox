@@ -7,23 +7,59 @@ import asyncio
 
 async def mainGame():
 
+    #! INIT
+    pygame.init()
+
+    WIDTH = 900
+    HEIGHT = 600
+
+    GRIDWIDTH = 300
+    GRIDHEIGHT = 200
+
+    cursorWidth = 3
+    cursorHeight = 3
+
+
+
+    win = pygame.display.set_mode((WIDTH, HEIGHT))
+    pygame.display.set_caption("Pybox")
+    pygame.mouse.set_visible(False)
+
+    tempParts = []
+    drawGrids = False
+    drawHGrids = False
+    drawVGrids = False
+    stopped = False
+    running = True
+    parts = []
+    font = pygame.font.SysFont("Arial", 24)
+
+
+
+    clock = pygame.time.Clock()
+    game = backend.Game(9.98,60,1.185)
+    delete = []
+    selected = 1
+
+
     async def mouseCreate():
         x, y = pygame.mouse.get_pos()
         x,y = x - cursorWidth//2 , y - cursorHeight //2
-        for i in range(0,cursorHeight+1):
-            newY = y + i
-            for j in range(0,cursorWidth+1):
-                newX = x + j
+        for i in range(0,cursorHeight//3):
+            newY = y + (i*3)
+            for j in range(0,cursorWidth//3):
+                newX = x + (j*3)
                 occupied = False
 
-                if len(grid[max(0, min(int(newY//3),GRIDHEIGHT ))][max(0, min(int(newX//3), GRIDWIDTH))]) > 0:occupied = True
+                if len(grid[max(0, min(int(newY//3),GRIDHEIGHT))][max(0, min(int(newX//3), GRIDWIDTH))]) > 0:occupied = True
 
                 if not occupied:
-                    part = game.spawner(selected, newX, newY, pygame)
+                    part = game.spawner(selected, int(round( newX/ 3) * 3), int(round( newY/ 3) * 3), pygame)
                     parts.append(part)
 
                 newX = x
             newY = y
+
 
     async def mouseDelete():
         x, y = pygame.mouse.get_pos()
@@ -45,36 +81,7 @@ async def mainGame():
 
 
 
-    #! INIT
-    pygame.init()
 
-    WIDTH = 800
-    HEIGHT = 600
-
-    GRIDWIDTH = 267 
-    GRIDHEIGHT = 200
-
-    cursorWidth = 3
-    cursorHeight = 3
-
-
-
-    win = pygame.display.set_mode((WIDTH, HEIGHT))
-    pygame.display.set_caption("Pybox")
-    pygame.mouse.set_visible(False)
-
-    drawGrids = False
-    stopped = False
-    running = True
-    parts = []
-    font = pygame.font.SysFont("Arial", 24)
-
-
-
-    clock = pygame.time.Clock()
-    game = backend.Game(9.98,60,1.185)
-    delete = []
-    selected = 1
 
 
     # #! Testler
@@ -112,11 +119,11 @@ async def mainGame():
 
 
     while running:
-        grid = [[[] for _ in range(-5,GRIDWIDTH)] for _ in range(-5,GRIDHEIGHT)]
+        if not stopped:
+            grid = [[[] for _ in range(0,GRIDWIDTH+1)] for _ in range(0,GRIDHEIGHT+1)]
         saat = clock.tick(game.tick)
         DT = saat / 1000
         win.fill((0,0,0))
-
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
@@ -141,6 +148,14 @@ async def mainGame():
                     parts.clear()
                     delete.clear()
 
+
+
+                if event.key == pygame.K_1:
+                    drawHGrids = not drawHGrids
+
+                if event.key == pygame.K_2:
+                    drawVGrids = not drawVGrids
+
                 if event.key == pygame.K_g:
                     drawGrids = not drawGrids
 
@@ -149,46 +164,50 @@ async def mainGame():
                 cursorHeight , cursorWidth = 3,3
 
         for part in parts:
-            part.draw(win,grid)
+            if not drawGrids:part.draw(win,grid)
+
+        for part in parts:
             if not stopped:
-                if part.type != "solid":
-                    part.gravity(win,game.gravity,DT,grid,game)
-                    part.move(win,DT,grid)
+                part.gravity(win,game.gravity,DT,grid,game)
+                part.move(win,DT,grid)
 
-                    if 0 > part.x or part.x >800:
-                        try:
-                            parts.remove(part)
-                        except:pass
+                if 3 > part.x or part.x >WIDTH-3:
+                    try:
+                        parts.remove(part)
+                    except:pass
 
-                    if 0 > part.y or part.y >599:
-                        try:
-                            parts.remove(part)
-                        except:pass
-                
+                if 3 > part.y or part.y >HEIGHT-3:
+                    try:
+                        parts.remove(part)
+                    except:pass
+            
 
-                    if part.checkLifeTime():
-                        delete.append(part)
-
-
-                    result = part.checkCollision(grid)
-                    if result[0]:
-                        synthesis = []
-                        data = game.reaction(result[2])
-                        # heat = game.heat(result[2])
-                        match data[0][0][0]:
-                            case "NEUTSPWN":
-                                part = game.spawner(data[0][0][1],result[1][0],result[1][1],pygame)
-                                parts.append(part)
-                                synthesis.append(part)
-                                delete = [x for x in data[1] if x not in synthesis]
+                if part.checkLifeTime():
+                    delete.append(part)
 
 
+        for part in parts:
+            result = part.checkCollision(grid)
+            if result[0]:
+                synthesis = []
+                data = game.reaction(result[2])
+                # heat = game.heat(result[2])
+                match data[0][0][0]:
+                    case "NEUTSPWN":
+                        part = game.spawner(data[0][0][1],result[1][0],result[1][1],pygame)
+                        tempParts.append(part)
+                        synthesis.append(part)
+                        delete = [x for x in data[1] if x not in synthesis]
 
 
 
 
-                            case "0":pass
-                            case _:pass
+
+
+                    case "0":pass
+                    case _:pass
+        parts.extend(part for part in tempParts)
+        tempParts.clear()
             
 
                     
@@ -213,12 +232,23 @@ async def mainGame():
 
         # pygame.draw.rect(win,(111, 112, 106),( cursorHeight,cursorWidth))
 
-        if drawGrids:
-            for i in range(0,800,3):
+        if drawVGrids:
+            for i in range(0,WIDTH,3):
                 pygame.draw.line(win,(255,0,0),(i,0),(i,HEIGHT))
+        
+        if drawHGrids:
             for i in range(0,HEIGHT,3):
                 pygame.draw.line(win,(255,0,0),(0,i),(WIDTH,i))
                 
+        if drawGrids:
+            index_map = {
+            (y, x)
+            for y, row in enumerate(grid)
+            for x, cell in enumerate(row)
+            if cell}
+            for indexies in index_map:
+                pygame.draw.rect(win,(255,255,255),(indexies[1]*3,indexies[0]*3,3,3))
+            
 
 
         cursor = pygame.Surface((cursorWidth,cursorHeight))
