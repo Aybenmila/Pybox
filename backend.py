@@ -6,7 +6,10 @@ import json
 import os
 import sys
 
-GRIDWIDTH = 267 
+WIDTH = 900
+HEIGHT = 600
+
+GRIDWIDTH = 300
 GRIDHEIGHT = 200
 
 
@@ -63,21 +66,27 @@ class Particle:
         self.y_velocity = y_velocity
         self.id = particleId
         self.lifeTime = lifeTime 
+    #* Düzeldi    
     def draw(self,win,grid):
         self.pygame.draw.rect(win, self.color, (self.x, self.y, 3, 3))
-        theGrid = grid[max(0, min(int(self.y//3),GRIDHEIGHT ))][max(0, min(int(self.x//3), GRIDWIDTH))]
-        if self not in theGrid:
-            theGrid.append(self)
-    
+        theGrid = grid[min(max(int(self.y//3),0),GRIDHEIGHT)][min(max(int(self.x//3),0),GRIDWIDTH)]
+        if self not in theGrid:theGrid.append(self)
+
+    #*Düzeldi
     def gravity(self,win,gravity,dt,grid,theGame):
-        downCell = grid[min(int(self.y//3)+1,GRIDHEIGHT)][min((int(self.x) //3), GRIDWIDTH)]
-        if downCell and any(item.type in ("solid", "powder") or item.type == self.type for item in downCell):
-            self.y_velocity = 0
-            return
-        self.y_velocity += gravity * dt * 15
-        if self.y_velocity >= 3:
-            self.y_velocity = 3
-        self.y += self.y_velocity
+        if self.y <= HEIGHT:
+            downCell = grid[min(int(self.y//3)+1,GRIDHEIGHT)][min((int(self.x) //3), GRIDWIDTH)]
+            if downCell and any(item.type in ("solid", "powder") or item.type == self.type for item in downCell):
+                self.y_velocity = 0
+                return
+            
+            gravity = int(round(gravity * dt * 15 / 3) * 3) 
+            self.y_velocity += gravity
+            if self.y_velocity >= 3:
+                self.y_velocity = 3
+            self.y += self.y_velocity
+            
+        
 
 
 
@@ -93,7 +102,7 @@ class Particle:
     def checkCollision(self,grid,x=None,y=None):
         x = x or self.x
         y = y or self.y
-        if 0 < x < 800 and 0 < y < 600:
+        if 0 < x < WIDTH and 0 < y < HEIGHT:
             cell = grid[int(y)//3][min(int(x) //3, GRIDWIDTH)]
             if len(cell) >= 1 :
                 return [True,(x,y),cell]
@@ -106,7 +115,7 @@ class Particle:
 
 
 class Nuclear(Particle):
-    def __init__(self,name:str,particleId:int,pygame,x,y,temp,mass,color,x_velocity=250,y_velocity=250,lifeTime = 600):
+    def __init__(self,name:str,particleId:int,pygame,x,y,temp,mass,color,x_velocity=250,y_velocity=250,lifeTime = HEIGHT):
         self.name = name
         self.pygame = pygame
         self.temp = temp
@@ -126,11 +135,13 @@ class Nuclear(Particle):
 
     def gravity(self,win,gravity,dt,grid,theGame):pass
 
+    #! Düzelt kotu oldu
     def move(self,win,dt,grid):
-        if 0 < self.x < 800 and 0 < self.y < 600:
+        if 0 < self.x < WIDTH and 0 < self.y < HEIGHT:
             cell = grid[min(int(self.y//3),GRIDHEIGHT)][min((int(self.x) //3), GRIDWIDTH)]
             self.x += math.cos(self.degree) * self.x_velocity * dt * 0.5
             self.y += math.sin(self.degree) * self.y_velocity * dt * 0.5
+            self.x , self.y = int(round(self.x/3)*3) , int(round(self.y/3)*3)
             if self not in cell:
                 cell.append(self)
                 return cell
@@ -207,26 +218,24 @@ class Powder(Particle):
         super().__init__(name,particleId,pygame,x,y,temp,mass,color)
 
 
-
+    #* Düzeldi
     def move(self,win,dt,grid):
         downCell = []
-        moveTo = random.randint(0,1) * 2 - 1
-        if 0 < self.x < 800 and 0 < self.y < 600:
-            downCell = grid[min(int(self.y//3)+1,GRIDHEIGHT)][min((int(self.x) //3), GRIDWIDTH)]
+        moveTo = random.randint(0, 1) * 2 - 1
+        if 0 < self.x < WIDTH and 0 < self.y < HEIGHT:
+            downCell = grid[min(max(int(self.y//3)+1,0),GRIDHEIGHT)][min(max((int(self.x) //3,0)), GRIDWIDTH)]
             if len(downCell) > 0:
-
-                gotoCell = grid[min(int(self.y//3+1),GRIDHEIGHT)][min((int(self.x) //3)+moveTo, GRIDWIDTH)]
+                gotoCell = grid[min(max(int(self.y//3+1),0),GRIDHEIGHT)][min(max((int(self.x) //3)+moveTo,0), GRIDWIDTH)]
                 if len(gotoCell) > 0 and any(item.type in ("solid", "powder") or item.type == self.type for item in gotoCell):
                     moveTo *= -1
-                gotoCell = grid[min(int(self.y//3+1),GRIDHEIGHT)][min((int(self.x) //3)+moveTo, GRIDWIDTH)]
+                gotoCell = grid[min(max(int(self.y//3+1),0),GRIDHEIGHT)][min(max((int(self.x) //3)+moveTo,0), GRIDWIDTH)]
                 if len(gotoCell) > 0 and any(item.type in ("solid", "powder") or item.type == self.type for item in gotoCell):
                     moveTo *= 0
             else:moveTo *= 0
 
-
-            self.x += moveTo
+            self.x += int(moveTo*3)
             gotoX , gotoY = self.x//3 , self.y //3 
-            cell = grid[min(int(gotoY),GRIDHEIGHT)][min(int(gotoX), GRIDWIDTH)]
+            cell = grid[min(max(int(gotoY),0),GRIDHEIGHT)][min(max(int(gotoX),0), GRIDWIDTH)]
             
             if self not in cell:
                 cell.append(self)
@@ -250,10 +259,10 @@ class Solid(Particle):
 
     def gravity(self,win,gravity,dt,grid,theGame):pass
 
-    def move(self,win,dt,grid):pass
-
-    def draw(self,win,grid):
-        self.pygame.draw.rect(win, self.color, (self.x, self.y, 3, 3));grid[min(int(self.y//3),GRIDHEIGHT)][min((int(self.x) //3), GRIDWIDTH)].append(self)
+    def move(self,win,dt,grid):
+        theGrid = grid[min(int(self.y//3),GRIDHEIGHT)][min((int(self.x) //3), GRIDWIDTH)]
+        if not self in theGrid:
+            theGrid.append(self)            
 
 
 
@@ -272,13 +281,13 @@ class Liquid(Particle):
         super().__init__(name,particleId,pygame,x,y,temp,mass,color)
 
 
-
+    #* Düzeldi
     def move(self,win,dt,grid):
         downCell = []
-        moveTo = random.randint(0,1) * 2 - 1
+        moveTo = random.randint(0, 1) * 2 - 1
         upCell = grid[min(int(self.y//3)-1,GRIDHEIGHT)][min((int(self.x) //3), GRIDWIDTH)]
         downCell = grid[min(int(self.y//3)+1,GRIDHEIGHT)][min((int(self.x) //3), GRIDWIDTH)]
-        if not len(upCell) > 0 and len(downCell) > 0:
+        if len(upCell) == 0 and len(downCell) > 0:
 
             gotoCell = grid[min(int(self.y//3),GRIDHEIGHT)][min((int(self.x) //3)+moveTo, GRIDWIDTH)]
             if len(gotoCell) > 0:
@@ -286,11 +295,13 @@ class Liquid(Particle):
             gotoCell = grid[min(int(self.y//3),GRIDHEIGHT)][min((int(self.x) //3)+moveTo, GRIDWIDTH)]
             if len(gotoCell) > 0:
                 moveTo *= 0
+        else:moveTo *= 0
 
 
-        self.x += moveTo
+        self.x += int(moveTo*3)
         cell = grid[min(int(self.y//3),GRIDHEIGHT)][min((int(self.x) //3) , GRIDWIDTH)]
         if len(cell) >1:
+            print([part.type for part in cell])
             if any(item.type == "powder" for item in cell):
                 ...
             cell = grid[min(int(self.y//3),GRIDHEIGHT)][min((int(self.x) //3), GRIDWIDTH)]
@@ -299,8 +310,9 @@ class Liquid(Particle):
             cell.append(self)
             return cell
 
+
 class Gas(Particle):
-    def __init__(self,name:str,particleId:int,pygame,x,y,temp,mass,color,density=1):
+    def __init__(self,name:str,particleId:int,pygame,x,y,temp,mass,color,density=1.100):
         self.name = name
         self.particleID = particleId
         self.pygame = pygame
@@ -317,14 +329,21 @@ class Gas(Particle):
 
     def gravity(self,win,gravity,dt,grid,theGame):
         direction  = -1*((self.y_velocity > 0) - (self.y_velocity < 0))
-        value = -(theGame.airDensity - self.density * dt)
-        self.y_velocity =  value
+        value = -((theGame.airDensity - self.density) * dt)
+        value = 0 if value == 0 else int(math.copysign(max(1, round(abs(value) / 3)), value) * 3)
+        self.y_velocity +=  value
+
+        if self.y_velocity != value:
+            self.y_velocity = value
+
         if len(grid[min(int(self.y//3)+direction,GRIDHEIGHT)][min((int(self.x) //3), GRIDWIDTH)]) > 1:
             self.y_velocity = 0
-            self.y += direction * 5
+            self.y += int(direction * 3)
             return
 
         self.y += self.y_velocity
+        grid[min(max(int(self.y//3)+direction,0),GRIDHEIGHT)][min(max((int(self.x) //3),0), GRIDWIDTH)]
+
 
     def move(self,win,dt,grid):
         moveTo = random.randint(0,1) * 2 - 1
@@ -335,5 +354,5 @@ class Gas(Particle):
         if len(gotoCell) > 0:
             moveTo *= 0
 
-
+        moveTo = int(moveTo*3)
         self.x += moveTo
