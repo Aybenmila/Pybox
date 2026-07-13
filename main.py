@@ -44,21 +44,22 @@ async def mainGame():
 
     async def mouseCreate():
         x, y = pygame.mouse.get_pos()
-        x,y = x - cursorWidth//2 , y - cursorHeight //2
-        for i in range(0,cursorHeight//3):
-            newY = y + (i*3)
-            for j in range(0,cursorWidth//3):
-                newX = x + (j*3)
-                occupied = False
+        x, y = x - cursorWidth // 2, y - cursorHeight // 2
+        for i in range(0, cursorHeight // 3):
+            newY = y + (i * 3)
+            for j in range(0, cursorWidth // 3):
+                newX = x + (j * 3)
 
-                if len(grid[max(0, min(int(newY//3),GRIDHEIGHT))][max(0, min(int(newX//3), GRIDWIDTH))]) > 0:occupied = True
+                # Önce hedef koordinatı hesapla
+                spawnX = int(round(newX / 3) * 3)
+                spawnY = int(round(newY / 3) * 3)
 
-                if not occupied:
-                    part = game.spawner(selected, int(round( newX/ 3) * 3), int(round( newY/ 3) * 3), pygame)
+                theGrid = grid[max(0, min(spawnY // 3, GRIDHEIGHT))][max(0, min(spawnX // 3, GRIDWIDTH))]
+                
+                if len(theGrid) == 0:
+                    part = game.spawner(selected, spawnX, spawnY, pygame)
                     parts.append(part)
-
-                newX = x
-            newY = y
+                    theGrid.append(part)
 
 
     async def mouseDelete():
@@ -77,6 +78,7 @@ async def mainGame():
             row = grid[gy]
             for gx in range(start_x, end_x + 1):
                 delete.extend(row[gx])
+                row[gx].clear()
 
 
 
@@ -119,8 +121,7 @@ async def mainGame():
 
 
     while running:
-        if not stopped:
-            grid = [[[] for _ in range(0,GRIDWIDTH+1)] for _ in range(0,GRIDHEIGHT+1)]
+        grid = [[[] for _ in range(0,GRIDWIDTH+1)] for _ in range(0,GRIDHEIGHT+1)]
         saat = clock.tick(game.tick)
         DT = saat / 1000
         win.fill((0,0,0))
@@ -136,7 +137,7 @@ async def mainGame():
                     if selected > 7:
                         selected = 1
 
-                if event.key == pygame.K_LSHIFT or pygame.K_RSHIFT:
+                if event.key == pygame.K_LSHIFT or event.key == pygame.K_RSHIFT:
                     cursorHeight = int(cursorHeight *1.5)
                     cursorWidth = int(cursorWidth *1.5)
                 
@@ -156,6 +157,8 @@ async def mainGame():
                 if event.key == pygame.K_2:
                     drawVGrids = not drawVGrids
 
+
+
                 if event.key == pygame.K_g:
                     drawGrids = not drawGrids
 
@@ -164,7 +167,7 @@ async def mainGame():
                 cursorHeight , cursorWidth = 3,3
 
         for part in parts:
-            if not drawGrids:part.draw(win,grid)
+            if not drawGrids:part.draw(win,grid);part.drawGlow(win)
 
         for part in parts:
             if not stopped:
@@ -187,25 +190,26 @@ async def mainGame():
 
 
         for part in parts:
-            result = part.checkCollision(grid)
-            if result[0]:
-                synthesis = []
-                data = game.reaction(result[2])
-                # heat = game.heat(result[2])
-                match data[0][0][0]:
-                    case "NEUTSPWN":
-                        part = game.spawner(data[0][0][1],result[1][0],result[1][1],pygame)
-                        tempParts.append(part)
-                        synthesis.append(part)
-                        delete = [x for x in data[1] if x not in synthesis]
+            if not stopped:
+                result = part.checkCollision(grid)
+                if result[0]:
+                    synthesis = []
+                    data = game.reaction(result[2])
+                    # heat = game.heat(result[2])
+                    match data[0][0][0]:
+                        case "NEUTSPWN":
+                            part = game.spawner(data[0][0][1],result[1][0],result[1][1],pygame)
+                            tempParts.append(part)
+                            synthesis.append(part)
+                            delete = [x for x in data[1] if x not in synthesis]
 
 
 
 
 
 
-                    case "0":pass
-                    case _:pass
+                        case "0":pass
+                        case _:pass
         parts.extend(part for part in tempParts)
         tempParts.clear()
             
@@ -254,8 +258,8 @@ async def mainGame():
         cursor = pygame.Surface((cursorWidth,cursorHeight))
         cursor.set_alpha(64)
         cursor.fill((255,255,255))
-        win.blit(cursor,(pygame.mouse.get_pos()[0]-cursorWidth//2,pygame.mouse.get_pos()[1]-cursorHeight//2,))
-        
+
+        win.blit(cursor,(pygame.mouse.get_pos()[0]-cursorWidth//2,pygame.mouse.get_pos()[1]-cursorHeight//2))
         win.blit(font.render(f"Particle:{len(parts)} , FPS : {int(clock.get_fps())}", True, (255, 255, 255)), (0, 0))
         win.blit(font.render(f"selected particle:{game.elementData(selected)["name"]}",True,(255,255,255)),(0,20))
         
