@@ -7,8 +7,9 @@ A 2d physic based sandbox backbone made with python and pygame. This game provid
 * Solid
 * Liquid
 * Gas
+* Fire (W.I.P)
 
-Currently there is 1 reaction. But you can add more if you want to with the collision and spawn system. 
+Currently there is 1 reaction. But you can add more if you want to with the collision and spawn system.
 
 ## Controls
 
@@ -19,8 +20,6 @@ Currently there is 1 reaction. But you can add more if you want to with the coll
 * 1 - Draw horizontal grids
 * 2 - Draw verticle grids
 * G - Draw particle in grids
-
-
 
 ### SCREENSHOTS
 
